@@ -1,6 +1,6 @@
 import os
-from flask import(Flask, request, abort, 
-jsonify, render_template, redirect, url_for)
+from flask import (Flask, request, abort,
+                   jsonify, render_template, redirect, url_for)
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from models import *
@@ -19,19 +19,16 @@ def create_app(test_config=None):
 
     @app.after_request
     def after_request(response):
-        response.headers.add(
-            'Access-Control-Allow-Headers',
-            'Content-Type,Authorization,true')
-        response.headers.add(
-            'Access-Control-Allow-Methods',
-            'GET,PATCH,POST,DELETE,OPTIONS')
+        response.headers.add('Access-Control-Allow-Headers',
+                             'Content-Type,Authorization,true')
+        response.headers.add('Access-Control-Allow-Methods',
+                             'GET,PATCH,POST,DELETE,OPTIONS')
         return response
 
     @app.route("/", methods=['GET'])
     def home():
         msg = 'Welcome to Casting Agency API'
         return jsonify(msg)
-
 
     @app.route("/movies", methods=['GET'])
     @requires_auth("get:movies")
@@ -87,9 +84,9 @@ def create_app(test_config=None):
                     name=body['name'],
                     age=body['age'],
                     gendar=body['gendar'])
-                movie_id = Movie.query.filter(
-                    Movie.id == body['movie_id']).one_or_none()
-                actor.movies = [movie_id]
+                movies = Movie.query.filter(
+                    Movie.id == body['movies']).one_or_none()
+                actor.movies = [movies]
                 actor.insert()
                 return jsonify({
                     'success': True,
