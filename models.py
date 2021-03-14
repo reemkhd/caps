@@ -20,11 +20,11 @@ setup_db(app)
     binds a flask application and a SQLAlchemy service
 '''
 def setup_db(app):
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_path
+    app.config["SQLALCHEMY_DATABASE_URI"] = "postgres://qdtbedjanjtobz:89028659959d448deb1c200e2016025978ac72868430133949bb0face67e6fb0@ec2-54-145-249-177.compute-1.amazonaws.com:5432/deue955r2tp1cc"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    #db.create_all()
+    db.create_all()
 
 
 # For many-to-many relationship between Movie & Actor
