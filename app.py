@@ -27,6 +27,11 @@ def create_app(test_config=None):
             'GET,PATCH,POST,DELETE,OPTIONS')
         return response
 
+    @app.route("/", methods=['GET'])
+    def home():
+        msg = 'Welcome to Casting Agency API'
+        return jsonify(msg)
+
 
     @app.route("/movies", methods=['GET'])
     @requires_auth("get:movies")
