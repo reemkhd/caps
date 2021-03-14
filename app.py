@@ -27,9 +27,6 @@ def create_app(test_config=None):
             'GET,PATCH,POST,DELETE,OPTIONS')
         return response
 
-    @app.route('/')
-    def home():
-        return render_template('home.html')
 
     @app.route("/movies", methods=['GET'])
     @requires_auth("get:movies")
