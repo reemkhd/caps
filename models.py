@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 import os
 from sqlalchemy import DateTime
+from dataclasses import dataclass
 
 db = SQLAlchemy()
 
@@ -13,12 +14,11 @@ setup_db(app)
 
 
 def setup_db(app):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "postgres://qdtbedjanjtobz:89028659959d448deb1c200e2016025978ac72868430133949bb0face67e6fb0@ec2-54-145-249-177.compute-1.amazonaws.com:5432/deue955r2tp1cc"
+    app.config["SQLALCHEMY_DATABASE_URI"] = 'postgres://qdtbedjanjtobz:89028659959d448deb1c200e2016025978ac72868430133949bb0face67e6fb0@ec2-54-145-249-177.compute-1.amazonaws.com:5432/deue955r2tp1cc'    
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    db.create_all()
-
+    #db.create_all()
 
 # For many-to-many relationship between Movie & Actor
 # the Movie table is the parent since it is more important
@@ -36,7 +36,30 @@ actor_movie = db.Table(
         primary_key=True))
 
 
-class Movie(db.Model):
+'''
+Extend the base Model class to add common methods
+'''
+class inheritedClassName(db.Model):
+    __abstract__ = True
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+
+@dataclass
+class Movie(inheritedClassName):
+    id: int
+    name: String
+    relase_date: DateTime
+
     __tablename__ = 'movie'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -55,19 +78,12 @@ class Movie(db.Model):
             'actors': [x.name for x in self.actor]
         }
 
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-
-class Actor(db.Model):
+@dataclass
+class Actor(inheritedClassName):
+    id: int
+    name: String
+    age: int
+    gendar: String
     __tablename__ = 'actor'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -91,14 +107,3 @@ class Actor(db.Model):
             'gendar': self.gendar,
             'movies': [x.name for x in self.movies]
         }
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
